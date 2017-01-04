@@ -1,17 +1,22 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const methodOverride = require('method-override')
 const mongoose = require('mongoose')
 const erm = require('express-restify-mongoose')
-const app = express()
-const router = express.Router()
 
-app.use(bodyParser.json())
-app.use(methodOverride())
+var restify = require('restify');
+var plugins = require('restify-plugins');
+
+const server = restify.createServer({
+  name: 'myapp',
+  version: '1.0.0'
+});
+
+server.use(plugins.acceptParser(server.acceptable));
+server.use(plugins.queryParser());
+server.use(plugins.bodyParser());
+
 
 mongoose.connect('mongodb://10.55.71.203/experiments')
 
-const uri = erm.serve(router, mongoose.model('Customer', new mongoose.Schema({
+const uri = erm.serve(server, mongoose.model('Customer', new mongoose.Schema({
   name: { type: String, required: true },
   comment: { type: String }
 })),{
@@ -22,8 +27,11 @@ const uri = erm.serve(router, mongoose.model('Customer', new mongoose.Schema({
 );
 console.log(uri);
 
-app.use(router)
+server.get('/echo/:name', function (req, res, next) {
+  res.send(req.params);
+  return next();
+});
 
-app.listen(3000, () => {
-  console.log('Server listening on port 3000')
-})
+server.listen(8080, function () {
+  console.log('%s listening at %s', server.name, server.url);
+});

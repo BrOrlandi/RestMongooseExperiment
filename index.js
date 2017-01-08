@@ -1,4 +1,7 @@
 const mongoose = require('mongoose')
+// Use native promises
+mongoose.Promise = global.Promise;
+
 const erm = require('express-restify-mongoose')
 
 var restify = require('restify');
@@ -14,9 +17,9 @@ server.use(plugins.queryParser());
 server.use(plugins.bodyParser());
 
 
-mongoose.connect('mongodb://10.55.71.203/experiments')
+mongoose.connect('mongodb://localhost/experiments');
 
-const uri = erm.serve(server, mongoose.model('Customer', new mongoose.Schema({
+const uri = erm.serve(server, mongoose.model('Person', new mongoose.Schema({
   name: { type: String, required: true },
   comment: { type: String }
 })),{

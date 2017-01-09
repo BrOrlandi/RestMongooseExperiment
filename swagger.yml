@@ -1,0 +1,92 @@
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "1.0.0"
+  title: Swagger Experiment
+  description: A simple API for study only.
+schemes:
+  - http
+host: localhost:8080
+basePath: /api
+
+# Describe your paths here
+paths:
+  # This is a path endpoint. Change it.
+  /Persons:
+    # This is a HTTP operation
+    get:
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Gets `Person` objects.
+        Get all **persons** on db.
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Return all persons
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: ArrayOfPersons
+            type: array
+            items:
+              title: Person
+              type: object
+              properties:
+                name:
+                  type: string
+                comment:
+                  type: string
+    post:
+      description: Create a new `Person`
+      parameters:
+        - name: Person
+          in: body
+          description: Person to be created
+          schema:
+            required: 
+              - name
+            properties:
+              name:
+                type: string
+              comment:
+                type: string
+      responses:
+        201:
+          description: Successfully created.
+        400:
+          description: Couldn't be created.
+  
+  /Persons/count:
+    get:
+      description: Count how many `Persons` are in db.
+      responses:
+        200:
+          description: OK
+          schema:
+            properties:
+              count: 
+                type: integer
+    
+                  
+  /Persons/{_id}:
+    get:
+      description: Get one `Person` with the **_id** provided
+      parameters:
+        - name: "_id"
+          in: path
+          required: true
+          description: The Person id
+          type: string
+      responses:
+        200:
+          description: Return the person
+          schema:
+            title: Person
+            type: object
+            properties:
+              name:
+                type: string
+              comment:
+                type: string
